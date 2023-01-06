@@ -87,22 +87,26 @@ quantalama = [
 
 def JPEG_DCT(imgfile, file,type):
     # 1 channel x 8 bits, grayscale
-    img = cv2.imread(imgfile,0)
+    img = cv2.imread(imgfile,0) # dosyanın okunması, 0 ile gri ölçekte okunur
 
 #    wndName = "original grayscale"
 #    cv2.namedWindow(wndName, cv2.WINDOW_AUTOSIZE)
 #    cv2.imshow(wndName, img)
 
-    iHeight, iWidth = img.shape[:2]
-#    print "size:", iWidth, "x", iHeight
+    iHeight, iWidth = img.shape[:2] # resmin yükseklik ve genişliğini bulur.
 
     # set size to multiply of 8
+    # Bu kod, resmin genişliğinin 8'e tam bölünebilir olup olmadığını kontrol eder.
+    # Eğer genişlik 8'e tam bölünmüyorsa, resme sola veya sağa ekstra pikseller eklenir.
+    # Bu sayede, resmin genişliği 8'e tam bölünebilir hale getirilir.
     if (iWidth % 8) != 0:
         filler = img[:,iWidth-1:]
-        #print "width filler size", filler.shape
         for i in range(8 - (iWidth % 8)):
             img = np.append(img, filler, 1)
 
+    # Bu kod, resmin yüksekliğinin 8'e tam bölünebilir olup olmadığını kontrol eder.
+    # Eğer yükseklik 8'e tam bölünmüyorsa, resme yukarıya veya aşağıya ekstra pikseller eklenir.
+    # Bu sayede, resmin yüksekliği 8'e tam bölünebilir hale getirilir.
     if (iHeight % 8) != 0:
         filler = img[iHeight-1:,:]
         #print "height filler size", filler.shape
@@ -113,11 +117,14 @@ def JPEG_DCT(imgfile, file,type):
 
 
     # array as storage for DCT + quant.result
+    # Bu kod, boş bir NumPy dizisi oluşturur ve bu diziyi img2 değişkenine atar.
+    # Bu dizi, resmin yüksekliğini ve genişliğini belirten iHeight ve iWidth değişkenleriyle oluşturulur.
     img2 = np.empty(shape=(iHeight, iWidth))
 
     # FORWARD ----------------
     # do calc. for each 8x8 non-overlapping blocks
 
+    # Bu kod, resim dosyasını 8x8 lik bloklara böler ve her blok için DCT (Discrete Cosine Transform) uygular.
     for startY in range(0, iHeight, 8):
         for startX in range(0, iWidth, 8):
             block = img[startY:startY+8, startX:startX+8]
@@ -146,6 +153,9 @@ def JPEG_DCT(imgfile, file,type):
     # print "After (1st block):\n",block1
 
     # INVERSE ----------------
+    # Bu kod, önceki kodda uygulanan DCT işleminin tersini yapar ve resim dosyasını orijinal haline geri getirmeye çalışır.
+    # Bu işlem, DCT uygulanmış resim dosyasının boyutunun azaltılması hedeflenirken,
+    # bu kod sayesinde resim dosyasının orijinal boyutuna geri dönülür.
     for startY in range(0, iHeight, 8):
         for startX in range(0, iWidth, 8):
             block = img2[startY:startY+8, startX:startX+8]
@@ -164,7 +174,11 @@ def JPEG_DCT(imgfile, file,type):
     block1 = img[0:8, 0:8]
     # print "Reverse (1st block):\n",block1
 
-    file1 = "c:\\users\\ilker\\Desktop\\jpeg-dct\\"+file+".jpg"
+
+    # Bu kod, img dizisindeki verileri bir JPEG resim dosyası olarak kaydeder.
+    # file1 değişkenine, kaydedilecek dosyanın yolu ve dosya adı atanır.
+    # Örneğin, eğer file değişkeni "test" ise, dosya "c:\users\ilker\Desktop\jpeg-dct\test.jpg" olarak kaydedilir.
+    file1 = "c:\\users\\ilker\\Desktop\\jpeg-dct-2\\"+file+".jpg"
     cv2.imwrite(file1,img)
 
     # print "Image Size:", iWidth, "x", iHeight
@@ -182,30 +196,31 @@ def JPEG_DCT(imgfile, file,type):
 #    cv2.destroyWindow(wndName)
 
 type = 0
-#
-# for i in range(0, len(quantalama)):
-#     file = 'c' + str(i)
-#
-#     matrix_firat = quantalama[i]
-#
-#     # print(matrix_firat)
-#
-#     if (len(sys.argv) > 1):
-#         file = str(sys.argv[1])
-#
-#     if (len(sys.argv) > 2):
-#         type = int(sys.argv[2])
-#
-#     if (len(sys.argv) > 3):
-#         matrix_firat = str(sys.argv[3])
-#
-#     std_luminance_quant_tbl = eval(str(matrix_firat))
-#
-#     JPEG_DCT("mini.jpg", file, type)
-#     i+=1
 
+# Bu kod, quantalama dizisinde bulunan quantization matrisleri kullanarak bir resim dosyasını sıkıştırır ve bu
+# sıkıştırılmış dosyayı JPEG formatında kaydeder.
+
+for i in range(0, len(quantalama)):
+    file = 'c' + str(i)
+
+    matrix_firat = quantalama[i]
+
+    # print(matrix_firat)
+
+    if (len(sys.argv) > 1):
+        file = str(sys.argv[1])
+
+    if (len(sys.argv) > 2):
+        type = int(sys.argv[2])
+
+    if (len(sys.argv) > 3):
+        matrix_firat = str(sys.argv[3])
+
+    std_luminance_quant_tbl = eval(str(matrix_firat))
+
+    JPEG_DCT("mini.jpg", file, type)
+    i+=1
+
+# en düşük boyuta sahip olan görüntüde kullanılan quantalama tablosu
 print(quantalama[33])
-
-
-# matrix.txt dosyasındaki tüm satırları oku ve satırları 8*8lik bir matrise dönüştür
 
