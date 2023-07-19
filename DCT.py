@@ -1,10 +1,3 @@
-"""
-Simulation of basic JPEG compression,
-only DCT + quantization IDCT,
-not including entropy-encoding/Huffman-coding
-"""
-
-# jpeggraysim.py
 import cv2
 import numpy as np
 import os
@@ -120,9 +113,6 @@ def JPEG_DCT(imgfile, file,type):
     # Bu kod, boş bir NumPy dizisi oluşturur ve bu diziyi img2 değişkenine atar.
     # Bu dizi, resmin yüksekliğini ve genişliğini belirten iHeight ve iWidth değişkenleriyle oluşturulur.
     img2 = np.empty(shape=(iHeight, iWidth))
-
-    # FORWARD ----------------
-    # do calc. for each 8x8 non-overlapping blocks
 
     # Bu kod, resim dosyasını 8x8 lik bloklara böler ve her blok için DCT (Discrete Cosine Transform) uygular.
     for startY in range(0, iHeight, 8):
