@@ -80,7 +80,7 @@ quantalama = [
 
 def JPEG_DCT(imgfile, file,type):
     # 1 channel x 8 bits, grayscale
-    img = cv2.imread(imgfile,0) # dosyanın okunması, 0 ile gri ölçekte okunur
+    img = cv2.imread(imgfile,0)# dosyanın okunması, 0 ile gri ölçekte okunur
 
 #    wndName = "original grayscale"
 #    cv2.namedWindow(wndName, cv2.WINDOW_AUTOSIZE)
